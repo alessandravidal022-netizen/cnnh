@@ -82,6 +82,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/webhook/paradise"
+  to = "/.netlify/functions/webhook-paradise"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
