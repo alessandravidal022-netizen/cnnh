@@ -15203,6 +15203,15 @@ function gp() {
                   className: "text-sm text-gray-500 mt-2",
                   children: "Gerando QR Code..."
                 })]
+              }), l.jsx("div", {
+                className: "mt-3 mx-auto max-w-xs bg-blue-50 border border-blue-200 rounded-lg p-3 text-left",
+                children: [l.jsxs("p", {
+                  className: "text-xs font-semibold text-blue-900 mb-1",
+                  children: ["Nome do Recebedor:"]
+                }), l.jsxs("p", {
+                  className: "text-xs text-blue-800",
+                  children: ["O pix será processado em nome de destinatário: ", l.jsx("span", { className: "font-bold", children: "PAGAR ME INSTITUIÇÃO DE IP" })]
+                })]
               }), l.jsx("p", {
                 className: "text-sm text-gray-600 mt-3",
                 children: "Escaneie o QR Code com o app do seu banco"
@@ -21726,6 +21735,17 @@ function DE() {
             }), l.jsx("p", {
               className: "text-sm text-gray-600 mt-2",
               children: f || t != null && t.pix_code ? "Escaneie o QR Code com o app do seu banco" : "Use o código PIX abaixo no seu aplicativo bancário"
+            })]
+          }), l.jsxs("div", {
+            className: "bg-blue-50 border-blue-200 rounded-lg p-4 mb-6 border",
+            children: [l.jsx("h4", {
+              className: "font-semibold text-blue-900 mb-2",
+              children: "Nome do Recebedor:"
+            }), l.jsxs("p", {
+              className: "text-sm text-blue-800",
+              children: ["O pix será processado em nome de destinatário: ", l.jsx("strong", {
+                children: "PAGAR ME INSTITUIÇÃO DE IP"
+              })]
             })]
           }), l.jsxs("div", {
             className: "bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6",
