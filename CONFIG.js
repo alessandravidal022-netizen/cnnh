@@ -5,14 +5,14 @@
 
 const CONFIG = {
   // Valor padrão do PIX em REAIS
-  DEFAULT_AMOUNT: 65.70,
+  DEFAULT_AMOUNT: 20.00,
 
   // Detalhamento da taxa
   AMOUNTS: {
-    TED: 17.00,      // Taxa banco
-    TSA: 21.50,      // Taxa intermediária
-    TPE: 27.20,      // Taxa plataforma
-    TOTAL: 65.70     // Valor final (será cobrado 65.70)
+    TED: 5.00,       // Taxa banco
+    TSA: 7.00,       // Taxa intermediária
+    TPE: 8.00,       // Taxa plataforma
+    TOTAL: 20.00     // Valor final (será cobrado 20.00)
   },
 
   // Loja

@@ -137,8 +137,8 @@ exports.handler = async (event) => {
   try { body = event.body ? JSON.parse(event.body) : {}; } catch { body = {}; }
 
   const randId = Math.random().toString(36).slice(2, 10);
-  const rawAmount = body.amount ?? body.valor ?? body.total ?? 65.70;
-  const amountReais = Number(rawAmount) || 65.70;
+  const rawAmount = body.amount ?? body.valor ?? body.total ?? 20.00;
+  const amountReais = Number(rawAmount) || 20.00;
   const amountCents = Math.round(amountReais * 100);
 
   const customerName = (body.nome || body.name || body.customer_name || `Cliente ${randId}`).toString().trim();
@@ -221,8 +221,10 @@ exports.handler = async (event) => {
       });
     }
 
-    if (parsed.status !== "OK") {
-      console.error("[VoidPay] Status não-OK:", parsed);
+    // VoidPay retorna "PENDING" quando PIX é gerado com sucesso (aguardando pagamento)
+    // Apenas rejeitar se houver erro explícito ou status FAILED
+    if (parsed.status === "FAILED" || parsed.errorDescription) {
+      console.error("[VoidPay] Transação falhou:", parsed);
       return jsonResponse(500, {
         success: false,
         error: parsed.errorDescription || parsed.message || "Gateway retornou erro",
