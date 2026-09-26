@@ -1,5 +1,8 @@
-require("dotenv").config({ path: ".env.local" });
-require("dotenv").config({ path: ".env", override: false });
+// Carrega .env apenas localmente; no Netlify, process.env já vem do painel
+if (process.env.NETLIFY !== "true") {
+  require("dotenv").config({ path: ".env.local" });
+  require("dotenv").config({ path: ".env", override: false });
+}
 const express = require("express");
 const path = require("path");
 
