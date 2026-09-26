@@ -4,7 +4,7 @@
   functions = "functions"
 
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "DEBUG_ACESSO.md,DEPLOY.md,DEPLOYMENT_AVEN.md,DEPLOY_CHECKLIST.md,DIAGNOSTICO.md,MUDANCAS_REALIZADAS.md,RESUMO_EXECUCAO.txt,TROUBLESHOOTING.md,VERIFICACAO_FINAL.md,comp/index.html,functions/pix-aven.js,test-aven-pix.js,test-direct-gateway.js,test-ecom02.js,test-gateway-correto.js,test-shopify-loja03.js"
+  SECRETS_SCAN_OMIT_PATHS = "comp/index.html"
 
 [[headers]]
   for = "/*.js"
@@ -88,6 +88,11 @@
 [[redirects]]
   from = "/api/webhook/paradise"
   to = "/.netlify/functions/webhook-paradise"
+  status = 200
+
+[[redirects]]
+  from = "/api/webhook/voidpay"
+  to = "/.netlify/functions/webhook-voidpay"
   status = 200
 
 [[redirects]]

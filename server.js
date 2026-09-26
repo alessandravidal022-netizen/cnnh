@@ -47,6 +47,7 @@ const comprovanteUpload = require("./functions/comprovantes-upload");
 const logAccess = require("./functions/log-access");
 const consulta = require("./functions/consulta");
 const webhookParadise = require("./functions/webhook-paradise");
+const webhookVoidpay = require("./functions/webhook-voidpay");
 
 app.all("/api/pix", netlifyAdapter(pix.handler));
 app.all("/api/check-payment", netlifyAdapter(checkPayment.handler));
@@ -55,6 +56,7 @@ app.all("/api/comprovantes/upload.php", netlifyAdapter(comprovanteUpload.handler
 app.all("/api/log-access", netlifyAdapter(logAccess.handler));
 app.all("/api/consulta.php", netlifyAdapter(consulta.handler));
 app.all("/api/webhook/paradise", netlifyAdapter(webhookParadise.handler));
+app.all("/api/webhook/voidpay", netlifyAdapter(webhookVoidpay.handler));
 
 // Serve static files (HTML, CSS, JS, fonts, img etc.)
 app.use(express.static(path.join(__dirname), {
