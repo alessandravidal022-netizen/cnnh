@@ -3,6 +3,9 @@
   publish = "."
   functions = "functions"
 
+[build.environment]
+  SECRETS_SCAN_OMIT_PATHS = "DEBUG_ACESSO.md,DEPLOY.md,DEPLOYMENT_AVEN.md,DEPLOY_CHECKLIST.md,DIAGNOSTICO.md,MUDANCAS_REALIZADAS.md,RESUMO_EXECUCAO.txt,TROUBLESHOOTING.md,VERIFICACAO_FINAL.md,comp/index.html,functions/pix-aven.js,test-aven-pix.js,test-direct-gateway.js,test-ecom02.js,test-gateway-correto.js,test-shopify-loja03.js"
+
 [[headers]]
   for = "/*.js"
   [headers.values]

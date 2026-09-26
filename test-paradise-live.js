@@ -1,5 +1,12 @@
+// Script de teste local - NAO CONTÉM SECRETS HARDCODED
+// Para testar, defina PARADISE_API_KEY no seu ambiente local
 const PARADISE_BASE = "https://multi.paradisepags.com";
-const PARADISE_API_KEY = "sk_e99dc338d9b76bf872ee3fdfb5ae478b8f192e46cabe3736e1cce5dbc4ff1730";
+const PARADISE_API_KEY = process.env.PARADISE_API_KEY;
+
+if (!PARADISE_API_KEY) {
+  console.error("Defina PARADISE_API_KEY no ambiente antes de rodar este teste");
+  process.exit(1);
+}
 
 function gerarCpfValido() {
   const d = new Array(9);
@@ -17,12 +24,8 @@ function gerarCpfValido() {
 
 async function testarParadise() {
   console.log("\n=== TESTE PARADISE PAYMENTS ===\n");
-  console.log("API Key:", PARADISE_API_KEY.substring(0, 10) + "...");
-  console.log("Endpoint:", `${PARADISE_BASE}/api/v1/transaction.php`);
-
   const reference = `TEST_${Date.now()}`;
   const cpf = gerarCpfValido();
-
   const payload = {
     amount: 2000,
     description: "Produto Digital",
@@ -36,10 +39,6 @@ async function testarParadise() {
     },
   };
 
-  console.log("\nPayload enviado:");
-  console.log(JSON.stringify(payload, null, 2));
-  console.log("\nEnviando requisicao...\n");
-
   try {
     const resp = await fetch(`${PARADISE_BASE}/api/v1/transaction.php`, {
       method: "POST",
@@ -49,39 +48,11 @@ async function testarParadise() {
       },
       body: JSON.stringify(payload),
     });
-
-    const text = await resp.text();
-    console.log("Status HTTP:", resp.status);
-    console.log("Resposta bruta:", text.substring(0, 800));
-
-    if (!resp.ok) {
-      console.error("\nERRO na requisicao!");
-      return;
-    }
-
-    const data = JSON.parse(text);
-    console.log("\n=== RESULTADO ===");
-    console.log("Status:", data.status);
-    console.log("Transaction ID:", data.transaction_id);
-    console.log("External ID:", data.id);
-    console.log("Amount:", data.amount, "centavos");
-    console.log("Acquirer:", data.acquirer);
-    console.log("Expires At:", data.expires_at);
-    console.log("Tem QR Code:", !!data.qr_code);
-    console.log("Tem QR Code Base64:", !!data.qr_code_base64);
-
-    if (data.qr_code) {
-      console.log("\nPIX Code (copie e cole no app do banco):");
-      console.log(data.qr_code);
-    }
-
-    if (data.qr_code_base64) {
-      console.log("\nQR Code Image (base64) recebido: SIM");
-    }
-
-    console.log("\n=== TESTE CONCLUIDO COM SUCESSO ===\n");
+    const data = await resp.json();
+    console.log("Status:", resp.status);
+    console.log("Resultado:", JSON.stringify(data, null, 2));
   } catch (err) {
-    console.error("\nERRO ao chamar API:", err.message);
+    console.error("Erro:", err.message);
   }
 }
 
