@@ -21944,10 +21944,10 @@ function IE() {
               className: "space-y-3",
               children: [l.jsx("h4", {
                 className: "font-semibold text-yellow-900 text-sm",
-                children: "📎 Enviar Comprovante de Pagamento"
+                children: "📎 Enviar Foto do Comprovante de Pagamento"
               }), l.jsx("p", {
                 className: "text-xs text-yellow-800",
-                children: "Anexe o comprovante do pagamento das taxas para agilizar a liberação do seu cadastro."
+                children: "Anexe a FOTO DO COMPROVANTE do pagamento (não é foto pessoal). Tire uma foto ou print do recibo do banco para agilizar a liberação do seu cadastro."
               }), l.jsx("input", {
                 type: "file",
                 accept: "image/*,.pdf",
@@ -23202,7 +23202,7 @@ Assim que realizar o pagamento das taxas no valor de R$ 68,10, clique no botão 
                     fontSize: "16px",
                     whiteSpace: "pre-line"
                   },
-                  children: "Não foi possível confirmar o pagamento automaticamente. Para ativar seu cadastro, clique abaixo e envie uma imagem do comprovante de pagamento."
+                  children: "Não foi possível confirmar o pagamento automaticamente. Para ativar seu cadastro, envie a FOTO DO COMPROVANTE (não é foto pessoal). Clique abaixo e selecione o arquivo."
                 })
               }), l.jsx("input", {
                 type: "file",
@@ -23219,7 +23219,7 @@ Assim que realizar o pagamento das taxas no valor de R$ 68,10, clique no botão 
                     className: "w-6 h-6 text-gray-500"
                   }), l.jsx("span", {
                     className: "text-gray-600 font-medium",
-                    children: br ? br.name : "Clique para selecionar o comprovante"
+                    children: br ? br.name : "Selecionar foto do comprovante"
                   })]
                 }), br && l.jsxs("button", {
                   onClick: Mi,
