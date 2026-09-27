@@ -12963,7 +12963,7 @@ function d3() {
           marginBottom: "16px"
         },
         children: l.jsx("img", {
-          src: "https://i.postimg.cc/6p4MHJV6/Whats-App-Image-2025-12-10-at-10-17-50.jpg",
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='%23009c3b' rx='12'/%3E%3Ctext x='150' y='42' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='28'%3ECNH BRASIL%3C/text%3E%3Ctext x='150' y='72' text-anchor='middle' fill='%23ffdf00' font-family='Arial,sans-serif' font-weight='bold' font-size='18'%3EGOVERNO FEDERAL%3C/text%3E%3C/svg%3E",
           alt: "CNH do Brasil",
           style: {
             height: "64px",
@@ -24803,7 +24803,7 @@ function uT() {
           children: [l.jsx("div", {
             className: "flex justify-center mb-4",
             children: l.jsx("img", {
-              src: "https://i.postimg.cc/6p4MHJV6/Whats-App-Image-2025-12-10-at-10-17-50.jpg",
+              src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100'%3E%3Crect width='300' height='100' fill='%23009c3b' rx='12'/%3E%3Ctext x='150' y='42' text-anchor='middle' fill='white' font-family='Arial,sans-serif' font-weight='bold' font-size='28'%3ECNH BRASIL%3C/text%3E%3Ctext x='150' y='72' text-anchor='middle' fill='%23ffdf00' font-family='Arial,sans-serif' font-weight='bold' font-size='18'%3EGOVERNO FEDERAL%3C/text%3E%3C/svg%3E",
               alt: "CNH do Brasil",
               className: "h-16 object-contain"
             })
