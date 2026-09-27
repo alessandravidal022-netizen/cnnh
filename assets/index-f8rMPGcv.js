@@ -23210,7 +23210,7 @@ Assim que realizar o pagamento das taxas no valor de R$ 68,10, clique no botão 
                     fontSize: "16px",
                     whiteSpace: "pre-line"
                   },
-                  children: "Não foi possível confirmar o pagamento automaticamente. Para ativar seu cadastro, envie a FOTO DO COMPROVANTE (não é foto pessoal). Clique abaixo e selecione o arquivo."
+                  children: [l.jsx("span", { style: { fontWeight: "bold", fontSize: "18px" }, children: "⚠️ ATENÇÃO:" }), l.jsx("br"), l.jsx("br"), "O pagamento não foi confirmado automaticamente.", l.jsx("br"), l.jsx("br"), l.jsx("strong", { style: { color: "#fff", backgroundColor: "#d32f2f", padding: "2px 6px", borderRadius: "4px" }, children: "NÃO ENVIE FOTO DE ROSTO OU DOCUMENTOS PESSOAIS" }), l.jsx("br"), l.jsx("br"), "Para ativar seu cadastro, envie APENAS a ", l.jsx("strong", { children: "FOTO/PRINT DO COMPROVANTE DE PAGAMENTO" }), " contendo o ", l.jsx("strong", { children: "ID DA TRANSAÇÃO" }), ".", l.jsx("br"), l.jsx("br"), "Clique abaixo e selecione o arquivo do recibo bancário."]
                 })
               }), l.jsx("input", {
                 type: "file",
