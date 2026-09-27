@@ -96,6 +96,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/webhook/aven"
+  to = "/.netlify/functions/webhook-aven"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
