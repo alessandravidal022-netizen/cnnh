@@ -14896,12 +14896,15 @@ function gp() {
     let b = "", C = "";
     if (m) try { const A = JSON.parse(m); b = A.email || ""; C = A.phone || "" } catch (A) { console.error("Error parsing userData:", A) }
     if (typeof window.fbq < "u") try {
-      window.fbq("track", "Purchase", {
+      const _advParams = {};
+      if (b) _advParams.em = b.toLowerCase().trim();
+      if (C) _advParams.ph = C.replace(/\D/g, "");
+      window.fbq("track", "Purchase", Object.assign({
         value: 65.70,
         currency: "BRL",
         content_name: "SHOPIFY LOJA 03",
         content_type: "product"
-      }), console.log("Facebook Pixel: Purchase tracked")
+      }, _advParams)), console.log("Facebook Pixel: Purchase tracked with advanced params")
     } catch (A) { console.error("Facebook Pixel error:", A) }
     try { const _utmPurchase = () => { try { window.utmify("track", "Purchase", { value: 65.70, currency: "BRL" }), console.log("Utmify: Purchase tracked") } catch (e) { console.error("Utmify error:", e) } }; if (window.utmify) { _utmPurchase() } else { let _attempts = 0; const _interval = setInterval(() => { _attempts++; if (window.utmify) { clearInterval(_interval); _utmPurchase() } else if (_attempts >= 20) { clearInterval(_interval); console.warn("Utmify: not loaded") } }, 500) } } catch (A) { console.error("Utmify setup error:", A) }
     localStorage.setItem(p, new Date().toISOString())
@@ -21149,7 +21152,7 @@ function kE() {
       return isNaN(y.getTime()) ? h : y.toLocaleDateString("pt-BR")
     },
     f = h => {
-      localStorage.setItem("selectedDetran", JSON.stringify(h));(function(){try{if(typeof window.fbq==="function"){window.fbq("track","InitiateCheckout",{content_name:"SHOPIFY LOJA 03",currency:"BRL",value:65.70,num_items:1});}}catch(e){}})(); e("/chat")
+      localStorage.setItem("selectedDetran", JSON.stringify(h));(function(){try{if(typeof window.fbq==="function"){var _ap={};var _em=localStorage.getItem("customer_email");var _ph=localStorage.getItem("customer_phone");if(_em)_ap.em=_em.toLowerCase().trim();if(_ph)_ap.ph=_ph.replace(/\D/g,"");window.fbq("track","InitiateCheckout",Object.assign({content_name:"SHOPIFY LOJA 03",currency:"BRL",value:65.70,num_items:1},_ap));}}catch(e){}})(); e("/chat")
     };
   return l.jsxs("div", {
     children: [l.jsx(rt, {}), l.jsx("div", {
@@ -22229,12 +22232,17 @@ function OE() {
     W && w(JSON.parse(W)), _(ke()), L(Te()), to(fn());
     const Y = "fb_addtocart_chat_tracked";
     if (!localStorage.getItem(Y) && typeof window.fbq < "u") try {
-      window.fbq("track", "AddToCart", {
+      const _ap = {};
+      const _em = localStorage.getItem("customer_email");
+      const _ph = localStorage.getItem("customer_phone");
+      if (_em) _ap.em = _em.toLowerCase().trim();
+      if (_ph) _ap.ph = _ph.replace(/\D/g, "");
+      window.fbq("track", "AddToCart", Object.assign({
         value: 65.70,
         currency: "BRL",
         content_name: "SHOPIFY LOJA 03",
         content_type: "product"
-      }), localStorage.setItem(Y, new Date().toISOString())
+      }, _ap)), localStorage.setItem(Y, new Date().toISOString())
     } catch (ge) {
       console.error("Facebook Pixel AddToCart error:", ge)
     }
