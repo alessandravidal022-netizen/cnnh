@@ -12963,7 +12963,7 @@ function d3() {
           marginBottom: "16px"
         },
         children: l.jsx("img", {
-          src: "/cnh-brasil-logo.png",
+          src: "https://i.postimg.cc/6p4MHJV6/Whats-App-Image-2025-12-10-at-10-17-50.jpg",
           alt: "CNH do Brasil",
           style: {
             height: "64px",
@@ -12982,8 +12982,9 @@ function d3() {
           },
           children: [l.jsx("img", {
             src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23333' d='M512 112H64c-35.3 0-64 28.7-64 64v256c0 35.3 28.7 64 64 64h448c35.3 0 64-28.7 64-64V176c0-35.3-28.7-64-64-64zM96 256c0-17.7 14.3-32 32-32h64c17.7 0 32 14.3 32 32s-14.3 32-32 32h-64c-17.7 0-32-14.3-32-32zm288 96H192c-17.7 0-32-14.3-32-32s14.3-32 32-32h192c17.7 0 32 14.3 32 32s-14.3 32-32 32z'/%3E%3C/svg%3E",
-            alt: "Ícone de um cartão de identificação sólido representando CPF"
-          }), "Número do CPF"]
+            alt: "CPF",
+            style: { width: "20px", height: "20px", marginRight: "8px" }
+          }), l.jsx("span", { children: "Número do CPF" })]
         })
       }), l.jsxs("div", {
         className: "accordion-panel",
@@ -24802,7 +24803,7 @@ function uT() {
           children: [l.jsx("div", {
             className: "flex justify-center mb-4",
             children: l.jsx("img", {
-              src: "/cnh-brasil-logo.png",
+              src: "https://i.postimg.cc/6p4MHJV6/Whats-App-Image-2025-12-10-at-10-17-50.jpg",
               alt: "CNH do Brasil",
               className: "h-16 object-contain"
             })
@@ -24817,7 +24818,7 @@ function uT() {
             children: [l.jsx("img", {
               src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='%23333' d='M512 112H64c-35.3 0-64 28.7-64 64v256c0 35.3 28.7 64 64 64h448c35.3 0 64-28.7 64-64V176c0-35.3-28.7-64-64-64zM96 256c0-17.7 14.3-32 32-32h64c17.7 0 32 14.3 32 32s-14.3 32-32 32h-64c-17.7 0-32-14.3-32-32zm288 96H192c-17.7 0-32-14.3-32-32s14.3-32 32-32h192c17.7 0 32 14.3 32 32s-14.3 32-32 32z'/%3E%3C/svg%3E",
               alt: "CPF",
-              className: "w-5 h-5"
+              style: { width: "20px", height: "20px", marginRight: "8px" }
             }), l.jsx("span", {
               className: "text-sm font-medium",
               style: {
