@@ -1,16 +1,16 @@
 const { getSupabase } = require("./lib/supabase");
 
-const PARADISE_BASE = "https://multi.paradisepags.com";
-const PARADISE_API_KEY = process.env.PARADISE_API_KEY;
+const AVEN_BASE = "https://api.avenpayments.com/v1";
+const AVEN_API_KEY = process.env.AVEN_API_KEY;
 const UTMIFY_TOKEN = "lzASZob4ldSJJc3jT1LILy9alPxWJgpnPhCh";
 
 async function sendUtmifyPaid(txData, transactionId) {
   try {
-    const amountCents = Math.round((txData.amount || 65.70) * 100);
+    const amountCents = Math.round((txData.amount || 20) * 100);
     const gatewayFeeCents = Math.round(amountCents * 0.02);
     const payload = {
       orderId: transactionId,
-      platform: "Paradise",
+      platform: "AvenPayments",
       paymentMethod: "pix",
       status: "paid",
       createdAt: txData.created_at || new Date().toISOString().replace("T", " ").slice(0, 19),
@@ -90,26 +90,26 @@ exports.handler = async (event) => {
     return jsonResponse(400, { success: false, error: "Informe o transactionId" });
   }
 
-  if (!PARADISE_API_KEY) {
-    console.error("[CheckPayment] PARADISE_API_KEY não configurada");
+  if (!AVEN_API_KEY) {
+    console.error("[CheckPayment] AVEN_API_KEY não configurada");
     return jsonResponse(500, {
       success: false,
       error: "Credenciais não configuradas",
-      debug: "PARADISE_API_KEY ausente",
+      debug: "AVEN_API_KEY ausente",
     });
   }
 
-  // Consultar na Paradise via query.php?action=get_transaction&id={id}
+  // Consultar pagamento na Aven Payments
   let statusResp, text = "";
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    const url = `${PARADISE_BASE}/api/v1/query.php?action=get_transaction&id=${encodeURIComponent(transactionId)}`;
+    const url = `${AVEN_BASE}/payment/${encodeURIComponent(transactionId)}`;
     statusResp = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": PARADISE_API_KEY,
+        "Authorization": `Bearer ${AVEN_API_KEY}`,
       },
       signal: controller.signal,
     });
@@ -125,20 +125,22 @@ exports.handler = async (event) => {
   let parsed = {};
   try { parsed = JSON.parse(text); } catch { parsed = {}; }
 
-  // Se a resposta for array (list_transactions), pegar o primeiro
-  const data = Array.isArray(parsed) ? parsed[0] || {} : parsed;
-  const rawStatus = (data.status || "pending").toLowerCase();
+  const rawStatus = (parsed.status || "PENDING").toUpperCase();
 
-  // Mapear statuses da Paradise
+  // Mapear statuses da Aven Payments
   let status;
   let paid = false;
-  if (rawStatus === "approved") {
+  if (rawStatus === "PAID") {
     status = "paid";
     paid = true;
-  } else if (rawStatus === "failed" || rawStatus === "chargeback") {
+  } else if (rawStatus === "REFUSED") {
     status = "rejected";
-  } else if (rawStatus === "refunded") {
+  } else if (rawStatus === "REFUNDED") {
     status = "refunded";
+  } else if (rawStatus === "CHARGEDBACK") {
+    status = "charged_back";
+  } else if (rawStatus === "PROCESSING") {
+    status = "processing";
   } else {
     status = "pending";
   }
@@ -155,7 +157,7 @@ exports.handler = async (event) => {
       const alreadyPaid = txData?.status === "paid";
       await supabase.from("transactions").update({
         status: "paid",
-        paid_at: new Date().toISOString(),
+        paid_at: parsed.paidAt || new Date().toISOString(),
       }).eq("transaction_id", transactionId);
       if (!alreadyPaid && txData) await sendUtmifyPaid(txData, transactionId);
     } else {

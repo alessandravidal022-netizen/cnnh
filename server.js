@@ -48,6 +48,7 @@ const logAccess = require("./functions/log-access");
 const consulta = require("./functions/consulta");
 const webhookParadise = require("./functions/webhook-paradise");
 const webhookVoidpay = require("./functions/webhook-voidpay");
+const webhookAven = require("./functions/webhook-aven");
 
 app.all("/api/pix", netlifyAdapter(pix.handler));
 app.all("/api/check-payment", netlifyAdapter(checkPayment.handler));
@@ -57,6 +58,7 @@ app.all("/api/log-access", netlifyAdapter(logAccess.handler));
 app.all("/api/consulta.php", netlifyAdapter(consulta.handler));
 app.all("/api/webhook/paradise", netlifyAdapter(webhookParadise.handler));
 app.all("/api/webhook/voidpay", netlifyAdapter(webhookVoidpay.handler));
+app.all("/api/webhook/aven", netlifyAdapter(webhookAven.handler));
 
 // Serve static files (HTML, CSS, JS, fonts, img etc.)
 app.use(express.static(path.join(__dirname), {
