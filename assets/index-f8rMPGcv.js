@@ -12963,7 +12963,7 @@ function d3() {
           marginBottom: "16px"
         },
         children: l.jsx("img", {
-          src: "https://kommodo.ai/i/diNPEXPYl4KSyTz8DzNj",
+          src: "https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png",
           alt: "CNH do Brasil",
           style: {
             height: "64px",
@@ -24803,7 +24803,7 @@ function uT() {
           children: [l.jsx("div", {
             className: "flex justify-center mb-4",
             children: l.jsx("img", {
-              src: "https://kommodo.ai/i/diNPEXPYl4KSyTz8DzNj",
+              src: "https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png",
               alt: "CNH do Brasil",
               className: "h-16 object-contain"
             })
