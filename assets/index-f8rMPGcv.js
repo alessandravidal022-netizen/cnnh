@@ -23088,6 +23088,17 @@ Assim que realizar o pagamento das taxas no valor de R$ 68,10, clique no botão 
                     })]
                   })
                 }), l.jsxs("div", {
+                  className: "bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3",
+                  children: [l.jsx("h4", {
+                    className: "font-semibold text-blue-900 mb-1 text-sm",
+                    children: "Nome do Recebedor:"
+                  }), l.jsxs("p", {
+                    className: "text-sm text-blue-800",
+                    children: ["O pix será processado em nome de destinatário: ", l.jsx("strong", {
+                      children: "PAGAR ME INSTITUIÇÃO DE IP"
+                    })]
+                  })]
+                }), l.jsxs("div", {
                   className: "mt-3 flex justify-between text-sm",
                   children: [l.jsxs("div", {
                     children: [l.jsx("p", {
@@ -23525,6 +23536,17 @@ function VE() {
                   children: "Copiar Código PIX"
                 })]
               })
+            }), l.jsxs("div", {
+              className: "bg-blue-50 border border-blue-200 rounded-lg p-4 mb-3",
+              children: [l.jsx("h4", {
+                className: "font-semibold text-blue-900 mb-1 text-sm",
+                children: "Nome do Recebedor:"
+              }), l.jsxs("p", {
+                className: "text-sm text-blue-800",
+                children: ["O pix será processado em nome de destinatário: ", l.jsx("strong", {
+                  children: "PAGAR ME INSTITUIÇÃO DE IP"
+                })]
+              })]
             }), l.jsxs("div", {
               className: "mt-3 flex justify-between text-sm",
               children: [l.jsxs("div", {
