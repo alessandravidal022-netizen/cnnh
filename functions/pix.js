@@ -175,7 +175,7 @@ exports.handler = async (event) => {
       type: "DIGITAL",
     }],
     metadata: {
-      provider: "cnnh",
+      provider: "store",
       orderId: externalRef,
       sellerTaxId: customerCpf,
       sellerEmail: customerEmail,
