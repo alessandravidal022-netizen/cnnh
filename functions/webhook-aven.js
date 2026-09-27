@@ -1,26 +1,27 @@
-const fetch = require("node-fetch");
+const https = require("https");
 const { getSupabase } = require("./lib/supabase");
-
 const UTMIFY_TOKEN = "lzASZob4ldSJJc3jT1LILy9alPxWJgpnPhCh";
 
-function jsonResponse(statusCode, body) {
-  return {
-    statusCode,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    },
-    body: JSON.stringify(body),
-  };
+function httpsRequest(hostname, path, method, headers, body, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const options = { hostname, path, method, headers, timeout: timeoutMs || 3000 };
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", (chunk) => { data += chunk; });
+      res.on("end", () => resolve({ status: res.statusCode, body: data }));
+    });
+    req.on("timeout", () => { req.destroy(); reject(new Error("Request timeout")); });
+    req.on("error", reject);
+    if (body) req.write(body);
+    req.end();
+  });
 }
 
 async function sendUtmifyPaid(transactionId, amountCents, customer, createdAt, utms) {
   try {
     const gatewayFeeCents = Math.round(amountCents * 0.02);
     const netCents = amountCents - gatewayFeeCents;
-    const payload = {
+    const payload = JSON.stringify({
       orderId: transactionId,
       platform: "AvenPayments",
       paymentMethod: "pix",
@@ -35,12 +36,7 @@ async function sendUtmifyPaid(transactionId, amountCents, customer, createdAt, u
         country: "BR",
         ip: "177.0.0.1",
       },
-      products: [{
-        id: "loja-shopify-br-001",
-        name: "SHOPIFY LOJA 03",
-        quantity: 1,
-        priceInCents: amountCents,
-      }],
+      products: [{ id: "loja-shopify-br-001", name: "SHOPIFY LOJA 03", quantity: 1, priceInCents: amountCents }],
       trackingParameters: {
         utm_source: utms?.utmSource || utms?.utm_source || null,
         utm_campaign: utms?.utmCampaign || utms?.utm_campaign || null,
@@ -54,36 +50,36 @@ async function sendUtmifyPaid(transactionId, amountCents, customer, createdAt, u
         userCommissionInCents: netCents,
         currency: "BRL",
       },
-    };
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-    await fetch("https://api.utmify.com.br/api-credentials/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-token": UTMIFY_TOKEN },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
     });
-    clearTimeout(timeoutId);
-    console.log("[UTMify] ✓ Pago via webhook Aven:", transactionId);
+    await httpsRequest("api.utmify.com.br", "/api-credentials/orders", "POST", {
+      "Content-Type": "application/json",
+      "x-api-token": UTMIFY_TOKEN,
+      "Content-Length": Buffer.byteLength(payload),
+    }, payload, 3000);
+    console.log("[UTMify] OK Pago via webhook Aven:", transactionId);
   } catch (err) {
-    console.error("[UTMify] Erro webhook (não bloqueia):", err.message);
+    console.error("[UTMify] Erro webhook (nao bloqueia):", err.message);
   }
+}
+
+function jsonResponse(statusCode, body) {
+  return {
+    statusCode,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    },
+    body: JSON.stringify(body),
+  };
 }
 
 exports.handler = async (event) => {
   console.log("[WEBHOOK-AVEN] ===== WEBHOOK RECEBIDO =====");
 
   if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-      },
-      body: "",
-    };
+    return { statusCode: 204, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "GET,POST,OPTIONS" }, body: "" };
   }
 
   if (event.httpMethod !== "POST") {
@@ -94,13 +90,12 @@ exports.handler = async (event) => {
   try {
     body = event.body ? JSON.parse(event.body) : {};
   } catch (err) {
-    console.error("[WEBHOOK-AVEN] JSON inválido:", err.message);
-    return jsonResponse(400, { error: "JSON inválido" });
+    console.error("[WEBHOOK-AVEN] JSON invalido:", err.message);
+    return jsonResponse(400, { error: "JSON invalido" });
   }
 
   console.log("[WEBHOOK-AVEN] Payload:", JSON.stringify(body).substring(0, 500));
 
-  // Aven envia o objeto payment direto no body do webhook
   const transactionId = String(body.id || "");
   const rawStatus = (body.status || "").toUpperCase();
   const amountCents = body.amount || 0;
@@ -114,40 +109,22 @@ exports.handler = async (event) => {
     return jsonResponse(200, { received: true, warning: "no transaction id" });
   }
 
-  // Mapear status da Aven para status interno
   let internalStatus;
   let isPaid = false;
 
   switch (rawStatus) {
-    case "PAID":
-      internalStatus = "paid";
-      isPaid = true;
-      break;
-    case "REFUSED":
-      internalStatus = "rejected";
-      break;
-    case "REFUNDED":
-      internalStatus = "refunded";
-      break;
-    case "CHARGEDBACK":
-      internalStatus = "charged_back";
-      break;
-    case "MED":
-      internalStatus = "dispute";
-      break;
-    case "PROCESSING":
-      internalStatus = "processing";
-      break;
-    case "PENDING":
-      internalStatus = "pending";
-      break;
-    default:
-      internalStatus = rawStatus.toLowerCase() || "unknown";
+    case "PAID": internalStatus = "paid"; isPaid = true; break;
+    case "REFUSED": internalStatus = "rejected"; break;
+    case "REFUNDED": internalStatus = "refunded"; break;
+    case "CHARGEDBACK": internalStatus = "charged_back"; break;
+    case "MED": internalStatus = "dispute"; break;
+    case "PROCESSING": internalStatus = "processing"; break;
+    case "PENDING": internalStatus = "pending"; break;
+    default: internalStatus = rawStatus.toLowerCase() || "unknown";
   }
 
   console.log("[WEBHOOK-AVEN] TX:", transactionId, "| Status Aven:", rawStatus, "-> Interno:", internalStatus);
 
-  // Atualizar Supabase
   try {
     const supabase = getSupabase();
 
@@ -168,7 +145,7 @@ exports.handler = async (event) => {
         })
         .eq("transaction_id", transactionId);
 
-      console.log("[WEBHOOK-AVEN] ✓ Supabase atualizado:", transactionId, "-> paid");
+      console.log("[WEBHOOK-AVEN] Supabase atualizado:", transactionId, "-> paid");
 
       if (!alreadyPaid) {
         await sendUtmifyPaid(
@@ -185,7 +162,7 @@ exports.handler = async (event) => {
         .update({ status: internalStatus })
         .eq("transaction_id", transactionId);
 
-      console.log("[WEBHOOK-AVEN] ✓ Supabase atualizado:", transactionId, "->", internalStatus);
+      console.log("[WEBHOOK-AVEN] Supabase atualizado:", transactionId, "->", internalStatus);
     }
   } catch (err) {
     console.error("[WEBHOOK-AVEN] Erro Supabase:", err.message);
