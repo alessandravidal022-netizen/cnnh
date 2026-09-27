@@ -1,3 +1,4 @@
+const fetch = require("node-fetch");
 const { getSupabase } = require("./lib/supabase");
 
 const UTMIFY_TOKEN = "lzASZob4ldSJJc3jT1LILy9alPxWJgpnPhCh";

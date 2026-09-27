@@ -1,3 +1,4 @@
+const fetch = require("node-fetch");
 const { getSupabase } = require("./lib/supabase");
 
 const AVEN_BASE = "https://api.avenpayments.com/v1";
