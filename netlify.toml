@@ -105,6 +105,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/pwa-transactions"
+  to = "/.netlify/functions/pwa-transactions"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
