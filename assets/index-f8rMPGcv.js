@@ -15214,7 +15214,7 @@ function gp() {
                   children: ["Nome do Recebedor:"]
                 }), l.jsxs("p", {
                   className: "text-xs text-blue-800",
-                  children: ["O pix será processado em nome de destinatário: ", l.jsx("span", { className: "font-bold", children: "SERVICOS DE COMPRAS" })]
+                  children: ["O pix será processado em nome de destinatário: ", l.jsx("span", { className: "font-bold", children: "PAGAR ME INSTITUIÇÃO DE IP" })]
                 })]
               }), l.jsx("p", {
                 className: "text-sm text-gray-600 mt-3",
@@ -21748,7 +21748,7 @@ function DE() {
             }), l.jsxs("p", {
               className: "text-sm text-blue-800",
               children: ["O pix será processado em nome de destinatário: ", l.jsx("strong", {
-                children: "SERVICOS DE COMPRAS"
+                children: "PAGAR ME INSTITUIÇÃO DE IP"
               })]
             })]
           }), l.jsxs("div", {
@@ -23103,7 +23103,7 @@ Assim que realizar o pagamento das taxas no valor de R$ 68,10, clique no botão 
                   }), l.jsxs("p", {
                     className: "text-sm text-blue-800",
                     children: ["O pix será processado em nome de destinatário: ", l.jsx("strong", {
-                      children: "SERVICOS DE COMPRAS"
+                      children: "PAGAR ME INSTITUIÇÃO DE IP"
                     })]
                   })]
                 }), l.jsxs("div", {
@@ -23552,7 +23552,7 @@ function VE() {
               }), l.jsxs("p", {
                 className: "text-sm text-blue-800",
                 children: ["O pix será processado em nome de destinatário: ", l.jsx("strong", {
-                  children: "SERVICOS DE COMPRAS"
+                  children: "PAGAR ME INSTITUIÇÃO DE IP"
                 })]
               })]
             }), l.jsxs("div", {
