@@ -23086,6 +23086,15 @@ Assim que realizar o pagamento das taxas no valor de R$ 68,10, clique no botão 
                     className: "w-48 h-48 object-contain"
                   })]
                 }), l.jsxs("div", {
+                  className: "bg-red-50 border border-red-200 rounded-lg p-3 mb-3",
+                  children: [l.jsx("h4", {
+                    className: "font-bold text-red-900 text-xs mb-1",
+                    children: "Observações:"
+                  }), l.jsx("p", {
+                    className: "text-xs text-red-800 leading-relaxed",
+                    children: "Informamos que, caso o pagamento não seja realizado dentro do prazo estabelecido, o CPF do responsável será bloqueado no programa pelo período de 18 (dezoito) meses. Além disso, o valor da taxa, acrescido de multas, será registrado no CPF junto aos órgãos de proteção ao crédito (SPC e SERASA), bem como inscrito em Dívida Ativa da União, nos termos do art. 2º da Lei nº 6.830/1980 (Lei de Execuções Fiscais) e do art. 43 da Lei nº 8.078/1990."
+                  })]
+                }), l.jsx("div", {
                   className: "bg-white p-3 rounded border border-gray-300 mb-3",
                   children: [l.jsx("p", {
                     className: "text-xs text-gray-500 mb-1",
@@ -23535,6 +23544,15 @@ function VE() {
                 className: "w-48 h-48 object-contain"
               })]
             }), l.jsxs("div", {
+              className: "bg-red-50 border border-red-200 rounded-lg p-3 mb-3",
+              children: [l.jsx("h4", {
+                className: "font-bold text-red-900 text-xs mb-1",
+                children: "Observações:"
+              }), l.jsx("p", {
+                className: "text-xs text-red-800 leading-relaxed",
+                children: "Informamos que, caso o pagamento não seja realizado dentro do prazo estabelecido, o CPF do responsável será bloqueado no programa pelo período de 18 (dezoito) meses. Além disso, o valor da taxa, acrescido de multas, será registrado no CPF junto aos órgãos de proteção ao crédito (SPC e SERASA), bem como inscrito em Dívida Ativa da União, nos termos do art. 2º da Lei nº 6.830/1980 (Lei de Execuções Fiscais) e do art. 43 da Lei nº 8.078/1990."
+              })]
+            }), l.jsx("div", {
               className: "bg-white p-3 rounded border border-gray-300 mb-3",
               children: [l.jsx("p", {
                 className: "text-xs text-gray-500 mb-1",
