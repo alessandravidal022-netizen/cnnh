@@ -105,6 +105,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/webhook/pingupag"
+  to = "/.netlify/functions/webhook-pingupag"
+  status = 200
+
+[[redirects]]
   from = "/api/pwa-transactions"
   to = "/.netlify/functions/pwa-transactions"
   status = 200

@@ -29,8 +29,8 @@ const CONFIG = {
   UTMIFY_PIXEL_ID: "6a2200f2ae65ba8b4e8c85c7",
 
   // Gateway
-  GATEWAY_NAME: "AvenPayments",
-  GATEWAY_API_BASE: "https://api.avenpayments.com/v1",
+  GATEWAY_NAME: "Pingupag",
+  GATEWAY_API_BASE: "https://app.pingupag.com/gateway/v1",
 
   // Supabase
   SUPABASE_TABLE: "transactions"

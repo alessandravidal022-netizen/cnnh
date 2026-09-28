@@ -1,7 +1,7 @@
 const https = require("https");
 const { getSupabase } = require("./lib/supabase");
-const AVEN_BASE = "api.avenpayments.com";
-const AVEN_API_KEY = process.env.AVEN_API_KEY;
+const PINGUPAG_BASE = "app.pingupag.com";
+const PINGUPAG_API_KEY = process.env.PINGUPAG_SECRET_KEY;
 const UTMIFY_TOKEN = "lzASZob4ldSJJc3jT1LILy9alPxWJgpnPhCh";
 
 function httpsRequest(hostname, path, method, headers, body, timeoutMs) {
@@ -25,7 +25,7 @@ async function sendUtmifyPaid(txData, transactionId) {
     const gatewayFeeCents = Math.round(amountCents * 0.02);
     const payload = JSON.stringify({
       orderId: transactionId,
-      platform: "AvenPayments",
+      platform: "Pingupag",
       paymentMethod: "pix",
       status: "paid",
       createdAt: txData.created_at || new Date().toISOString().replace("T", " ").slice(0, 19),
@@ -92,16 +92,17 @@ exports.handler = async (event) => {
     return jsonResponse(400, { success: false, error: "Informe o transactionId" });
   }
 
-  if (!AVEN_API_KEY) {
-    console.error("[CheckPayment] AVEN_API_KEY nao configurada");
-    return jsonResponse(500, { success: false, error: "Credenciais nao configuradas", debug: "AVEN_API_KEY ausente" });
+  if (!PINGUPAG_API_KEY) {
+    console.error("[CheckPayment] PINGUPAG_SECRET_KEY nao configurada");
+    return jsonResponse(500, { success: false, error: "Credenciais nao configuradas", debug: "PINGUPAG_SECRET_KEY ausente" });
   }
 
   let resp;
   try {
-    resp = await httpsRequest(AVEN_BASE, `/v1/payment/${encodeURIComponent(transactionId)}`, "GET", {
+    const queryPath = `/gateway/v1/query?action=get_transaction&id=${encodeURIComponent(transactionId)}`;
+    resp = await httpsRequest(PINGUPAG_BASE, queryPath, "GET", {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${AVEN_API_KEY}`,
+      "X-API-Key": PINGUPAG_API_KEY,
     }, null, 10000);
   } catch (err) {
     return jsonResponse(502, { success: false, error: "Falha ao consultar status: " + String(err) });
@@ -110,15 +111,15 @@ exports.handler = async (event) => {
   let parsed = {};
   try { parsed = JSON.parse(resp.body); } catch { parsed = {}; }
 
-  const rawStatus = (parsed.status || "PENDING").toUpperCase();
+  const rawStatus = (parsed.status || "pending").toLowerCase();
   let status;
   let paid = false;
 
-  if (rawStatus === "PAID") { status = "paid"; paid = true; }
-  else if (rawStatus === "REFUSED") { status = "rejected"; }
-  else if (rawStatus === "REFUNDED") { status = "refunded"; }
-  else if (rawStatus === "CHARGEDBACK") { status = "charged_back"; }
-  else if (rawStatus === "PROCESSING") { status = "processing"; }
+  if (rawStatus === "approved") { status = "paid"; paid = true; }
+  else if (rawStatus === "failed" || rawStatus === "refused") { status = "rejected"; }
+  else if (rawStatus === "refunded") { status = "refunded"; }
+  else if (rawStatus === "chargeback") { status = "charged_back"; }
+  else if (rawStatus === "processing" || rawStatus === "under_review") { status = "processing"; }
   else { status = "pending"; }
 
   try {
@@ -132,15 +133,10 @@ exports.handler = async (event) => {
       const alreadyPaid = txData?.status === "paid";
       await supabase.from("transactions").update({
         status: "paid",
-        paid_at: parsed.paidAt || new Date().toISOString(),
+        paid_at: parsed.updated_at || new Date().toISOString(),
       }).eq("transaction_id", transactionId);
       if (!alreadyPaid && txData) await sendUtmifyPaid(txData, transactionId);
     } else {
       await supabase.from("transactions").update({ status }).eq("transaction_id", transactionId);
     }
-  } catch (err) {
-    console.error("[Supabase] Erro ao atualizar status (continuando):", err.message);
-  }
-
-  return jsonResponse(200, { success: true, transactionId, status, paid });
-};
+  } catch (err
