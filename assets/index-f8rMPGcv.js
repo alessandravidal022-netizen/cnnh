@@ -23023,42 +23023,6 @@ Assim que realizar o pagamento das taxas no valor de R$ 68,10, clique no botão 
                     })]
                   })]
                 })]
-              }), l.jsxs("div", {
-                className: "p-4 border-b border-gray-300 bg-red-50",
-                children: [l.jsx("p", {
-                  className: "text-sm text-red-600 font-bold mb-2",
-                  children: "Observações:"
-                }), l.jsxs("p", {
-                  className: "text-sm text-red-600 mb-1",
-                  children: ["Informamos que, caso o pagamento não seja realizado dentro do prazo estabelecido, o ", l.jsx("span", {
-                    className: "font-bold",
-                    children: "CPF"
-                  }), " do responsável (", l.jsx("span", {
-                    className: "font-bold",
-                    children: Zl((f == null ? void 0 : f.cpf) || "")
-                  }), ") será bloqueado no programa pelo período de ", l.jsx("span", {
-                    className: "font-bold",
-                    children: "18 (dezoito) meses"
-                  }), ". Além disso, o valor da taxa, acrescido de multas, será registrado no ", l.jsx("span", {
-                    className: "font-bold",
-                    children: "CPF"
-                  }), " junto aos órgãos de proteção ao crédito (", l.jsx("span", {
-                    className: "font-bold",
-                    children: "SPC"
-                  }), " e ", l.jsx("span", {
-                    className: "font-bold",
-                    children: "SERASA"
-                  }), "), bem como inscrito em ", l.jsx("span", {
-                    className: "font-bold",
-                    children: "Dívida Ativa da União"
-                  }), ", nos termos do art. 2º da ", l.jsx("span", {
-                    className: "font-bold",
-                    children: "Lei nº 6.830/1980"
-                  }), " (Lei de Execuções Fiscais) e do art. 43 da ", l.jsx("span", {
-                    className: "font-bold",
-                    children: "Lei nº 8.078/1990"
-                  })]
-                })]
               }), l.jsx("div", {
                 className: "p-4 text-xs text-gray-500 border-b border-gray-300",
                 children: l.jsxs("p", {
