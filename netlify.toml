@@ -9,7 +9,6 @@
 
 [functions]
   node_bundler = "esbuild"
-  included_files = ["node_modules/node-fetch/**"]
 
 [[headers]]
   for = "/*.js"
