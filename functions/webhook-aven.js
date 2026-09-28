@@ -2,6 +2,19 @@ const https = require("https");
 const { getSupabase } = require("./lib/supabase");
 const UTMIFY_TOKEN = "lzASZob4ldSJJc3jT1LILy9alPxWJgpnPhCh";
 
+async function sendPushNotification(title, message, tag, type, transactionId, amount, customerName) {
+  try {
+    const payload = JSON.stringify({ title, message, tag, type, transactionId, amount, customerName });
+    await httpsRequest("brasil-cnh-gov.netlify.app", "/api/pwa-send-push", "POST", {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(payload),
+    }, payload, 5000);
+    console.log("[PWA-PUSH] Notificação enviada:", tag);
+  } catch (err) {
+    console.error("[PWA-PUSH] Erro ao enviar push (não bloqueia):", err.message);
+  }
+}
+
 function httpsRequest(hostname, path, method, headers, body, timeoutMs) {
   return new Promise((resolve, reject) => {
     const options = { hostname, path, method, headers, timeout: timeoutMs || 3000 };
@@ -154,6 +167,16 @@ exports.handler = async (event) => {
           { name: payer.name, email: payer.email, phone: payer.phone, taxId: payer.taxId },
           createdAt,
           utms
+        );
+        const amountReais = (amountCents / 100).toFixed(2).replace(".", ",");
+        await sendPushNotification(
+          "✅ PIX Pago!",
+          `R$ ${amountReais} confirmado!\n${payer.name || "Cliente"}\nID: ${transactionId}`,
+          `pix-pago-${transactionId}`,
+          "paid",
+          transactionId,
+          amountCents / 100,
+          payer.name
         );
       }
     } else {

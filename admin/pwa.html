@@ -38,17 +38,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .log-msg{color:#cbd5e1;line-height:1.4}
 .empty-state{text-align:center;padding:32px 16px;color:#64748b;font-size:14px}
 .footer{text-align:center;padding:16px;font-size:11px;color:#475569}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.pulse{animation:pulse 2s infinite}
 </style>
 </head>
 <body>
-
 <div class="header">
 <h1>🔔 CNH PIX</h1>
 <p>Notificações em tempo real</p>
 </div>
-
 <div class="container">
 <div class="card">
 <h2>📱 Permissão de Notificação</h2>
@@ -60,7 +56,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <span>🧪</span> Testar Notificação
 </button>
 </div>
-
 <div class="card">
 <h2>📋 Histórico Recente</h2>
 <ul id="logList" class="log-list">
@@ -68,19 +63,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </ul>
 </div>
 </div>
-
 <div class="footer">CNH Brasil &copy; 2026</div>
-
 <script>
-const API_BASE = '/api/pwa-transactions';
-let lastCheck = new Date().toISOString();
-let pollInterval = null;
+const VAPID_PUBLIC_KEY = 'BIoboalj0uCn2CVTTOU7uLfUpY0uqpF9rRlZjjZ9b3kt6RgJoZjuSlCHcmEziqMzEjzfzuDbD4_EmsEq4J9BRGU';
+let swRegistration = null;
+
+function urlBase64ToUint8Array(base64String) {
+const padding = '='.repeat((4 - base64String.length % 4) % 4);
+const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+const rawData = window.atob(base64);
+const outputArray = new Uint8Array(rawData.length);
+for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+return outputArray;
+}
 
 async function registerSW() {
 if (!('serviceWorker' in navigator)) return false;
 try {
-const reg = await navigator.serviceWorker.register('/sw.js');
-console.log('SW registered:', reg.scope);
+swRegistration = await navigator.serviceWorker.register('/sw.js');
+console.log('SW registered:', swRegistration.scope);
 return true;
 } catch (err) {
 console.error('SW failed:', err);
@@ -93,7 +94,6 @@ const badge = document.getElementById('statusBadge');
 const btn = document.getElementById('btnEnable');
 const btnTest = document.getElementById('btnTest');
 const perm = Notification.permission;
-
 badge.className = 'status-badge ' + perm;
 if (perm === 'granted') {
 badge.textContent = '✅ Notificações ativas';
@@ -113,92 +113,91 @@ btnTest.disabled = true;
 }
 }
 
+async function subscribeToPush() {
+if (!swRegistration) return false;
+try {
+const existing = await swRegistration.pushManager.getSubscription();
+if (existing) {
+console.log('Already subscribed to push');
+return true;
+}
+const subscription = await swRegistration.pushManager.subscribe({
+userVisibleOnly: true,
+applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+});
+const resp = await fetch('/api/pwa-subscribe', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ subscription: subscription.toJSON() })
+});
+if (!resp.ok) throw new Error('Failed to save subscription');
+console.log('Push subscription saved');
+addLog('pix-gerado', 'Inscrito para notificações push em segundo plano');
+return true;
+} catch (err) {
+console.error('Push subscribe failed:', err);
+return false;
+}
+}
+
 async function enableNotifications() {
 const swOk = await registerSW();
 if (!swOk) { alert('Service Worker não suportado neste navegador.'); return; }
-
 const perm = await Notification.requestPermission();
 updateStatus();
-
 if (perm === 'granted') {
-addLog('pix-gerado', 'Notificações ativadas com sucesso!');
-startPolling();
-new Notification('CNH PIX', { body: 'Notificações ativadas! Você será notificado sobre PIX.', icon: 'https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png' });
+const subOk = await subscribeToPush();
+if (subOk) {
+addLog('pix-gerado', 'Notificações push ativadas com sucesso!');
+new Notification('CNH PIX', { body: 'Notificações ativadas! Você será notificado sobre PIX em segundo plano.', icon: 'https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png' });
+} else {
+addLog('pix-gerado', 'Permissão concedida, mas falha ao inscrever no push. Tente novamente.');
+}
 }
 }
 
 function testNotification() {
 if (Notification.permission !== 'granted') return;
-new Notification('🧪 Teste CNH PIX', {
-body: 'PIX de R$ 20,00 gerado com sucesso!\nID: TEST-' + Date.now().toString(36).toUpperCase(),
-icon: 'https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png',
+fetch('/api/pwa-send-push', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({
+title: '🧪 Teste CNH PIX',
+message: 'PIX de R$ 20,00 gerado com sucesso!\nID: TEST-' + Date.now().toString(36).toUpperCase(),
 tag: 'test-' + Date.now(),
-vibrate: [100, 50, 100]
+type: 'generated',
+amount: 20.00,
+customerName: 'Teste'
+})
+}).then(r => r.json()).then(d => {
+addLog('pix-gerado', 'Notificação de teste enviada via push (' + (d.sent || 0) + ' dispositivos)');
+}).catch(err => {
+console.error('Test push failed:', err);
+addLog('pix-gerado', 'Falha ao enviar teste: ' + err.message);
 });
-addLog('pix-gerado', 'Notificação de teste enviada');
 }
 
 function addLog(type, msg) {
 const list = document.getElementById('logList');
 const empty = list.querySelector('.empty-state');
 if (empty) empty.remove();
-
 const li = document.createElement('li');
 li.className = 'log-item';
 const now = new Date();
 const time = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-li.innerHTML = `<span class="log-dot ${type}"></span><span class="log-msg">${msg}</span><span class="log-time">${time}</span>`;
+li.innerHTML = '<span class="log-dot ' + type + '"></span><span class="log-msg">' + msg + '</span><span class="log-time">' + time + '</span>';
 list.insertBefore(li, list.firstChild);
-
 while (list.children.length > 50) list.removeChild(list.lastChild);
-}
-
-async function checkTransactions() {
-try {
-const resp = await fetch(`${API_BASE}?since=${encodeURIComponent(lastCheck)}&limit=20`);
-if (!resp.ok) return;
-const result = await resp.json();
-const rows = result.transactions || [];
-
-for (const tx of rows.reverse()) {
-if (tx.created_at > lastCheck && tx.status === 'pending') {
-const val = (tx.amount || 0).toFixed(2).replace('.', ',');
-new Notification('💰 PIX Gerado', {
-body: `R$ ${val} - ${tx.customer_name || 'Cliente'}\nID: ${tx.transaction_id}`,
-icon: 'https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png',
-tag: `pix-gerado-${tx.transaction_id}`,
-vibrate: [100, 50, 100]
-});
-addLog('pix-gerado', `PIX gerado: R$ ${val} - ${tx.transaction_id}`);
-}
-if (tx.paid_at && tx.paid_at > lastCheck && tx.status === 'paid') {
-const val = (tx.amount || 0).toFixed(2).replace('.', ',');
-new Notification('✅ PIX Pago!', {
-body: `R$ ${val} confirmado!\n${tx.customer_name || 'Cliente'}\nID: ${tx.transaction_id}`,
-icon: 'https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png',
-tag: `pix-pago-${tx.transaction_id}`,
-vibrate: [200, 100, 200]
-});
-addLog('pix-pago', `PIX pago: R$ ${val} - ${tx.transaction_id}`);
-}
-}
-if (rows.length > 0) lastCheck = new Date().toISOString();
-} catch (err) {
-console.error('Poll error:', err);
-}
-}
-
-function startPolling() {
-if (pollInterval) clearInterval(pollInterval);
-pollInterval = setInterval(checkTransactions, 15000);
-checkTransactions();
 }
 
 // Init
 (async () => {
 await registerSW();
 updateStatus();
-if (Notification.permission === 'granted') startPolling();
+if (Notification.permission === 'granted' && swRegistration) {
+const sub = await swRegistration.pushManager.getSubscription();
+if (!sub) await subscribeToPush();
+}
 })();
 </script>
 </body>

@@ -1,4 +1,4 @@
-const CACHE_NAME = "cnh-pix-v1";
+const CACHE_NAME = "cnh-pix-v2";
 const ASSETS = [
   "/admin/pwa.html",
   "/manifest.json"
@@ -24,23 +24,25 @@ self.addEventListener("fetch", (e) => {
 });
 
 self.addEventListener("push", (e) => {
-  let data = { title: "CNH PIX", body: "Nova notificação", icon: "/manifest.json" };
+  let data = { title: "CNH PIX", body: "Nova notificação" };
   try { data = e.data ? e.data.json() : data; } catch {}
+
   const title = data.title || "CNH PIX";
   const options = {
     body: data.body || "",
     icon: data.icon || "https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png",
-    badge: "https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png",
+    badge: data.badge || "https://plain-enam-prod-public.komododecks.com/202609/27/diNPEXPYl4KSyTz8DzNj/image.png",
     tag: data.tag || "pix-notification",
     renotify: true,
     requireInteraction: false,
-    vibrate: [100, 50, 100],
+    vibrate: data.vibrate || [100, 50, 100],
     data: data.data || {},
     actions: [
       { action: "open", title: "Ver detalhes" },
       { action: "close", title: "Fechar" }
     ]
   };
+
   e.waitUntil(self.registration.showNotification(title, options));
 });
 

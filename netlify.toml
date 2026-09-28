@@ -110,6 +110,16 @@
   status = 200
 
 [[redirects]]
+  from = "/api/pwa-subscribe"
+  to = "/.netlify/functions/pwa-subscribe"
+  status = 200
+
+[[redirects]]
+  from = "/api/pwa-send-push"
+  to = "/.netlify/functions/pwa-send-push"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

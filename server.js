@@ -50,6 +50,8 @@ const webhookParadise = require("./functions/webhook-paradise");
 const webhookVoidpay = require("./functions/webhook-voidpay");
 const webhookAven = require("./functions/webhook-aven");
 const pwaTransactions = require("./functions/pwa-transactions");
+const pwaSubscribe = require("./functions/pwa-subscribe");
+const pwaSendPush = require("./functions/pwa-send-push");
 
 app.all("/api/pix", netlifyAdapter(pix.handler));
 app.all("/api/check-payment", netlifyAdapter(checkPayment.handler));
@@ -61,6 +63,8 @@ app.all("/api/webhook/paradise", netlifyAdapter(webhookParadise.handler));
 app.all("/api/webhook/voidpay", netlifyAdapter(webhookVoidpay.handler));
 app.all("/api/webhook/aven", netlifyAdapter(webhookAven.handler));
 app.all("/api/pwa-transactions", netlifyAdapter(pwaTransactions.handler));
+app.all("/api/pwa-subscribe", netlifyAdapter(pwaSubscribe.handler));
+app.all("/api/pwa-send-push", netlifyAdapter(pwaSendPush.handler));
 
 // Serve static files (HTML, CSS, JS, fonts, img etc.)
 app.use(express.static(path.join(__dirname), {

