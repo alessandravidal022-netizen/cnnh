@@ -14899,12 +14899,20 @@ function gp() {
       const _advParams = {};
       if (b) _advParams.em = b.toLowerCase().trim();
       if (C) _advParams.ph = C.replace(/\D/g, "");
+      let _utmFb = {};
+      try { _utmFb = JSON.parse(localStorage.getItem("utmData") || "{}"); } catch(e) {}
       window.fbq("track", "Purchase", Object.assign({
         value: 65.70,
         currency: "BRL",
         content_name: "SHOPIFY LOJA 03",
         content_type: "product"
-      }, _advParams)), console.log("Facebook Pixel: Purchase tracked with advanced params")
+      }, _advParams, {
+        utm_source: _utmFb.utm_source || null,
+        utm_medium: _utmFb.utm_medium || null,
+        utm_campaign: _utmFb.utm_campaign || null,
+        utm_content: _utmFb.utm_content || null,
+        utm_term: _utmFb.utm_term || null
+      })), console.log("Facebook Pixel: Purchase tracked with UTM and advanced params")
     } catch (A) { console.error("Facebook Pixel error:", A) }
     try { const _utmPurchase = () => { try { window.utmify("track", "Purchase", { value: 65.70, currency: "BRL" }), console.log("Utmify: Purchase tracked") } catch (e) { console.error("Utmify error:", e) } }; if (window.utmify) { _utmPurchase() } else { let _attempts = 0; const _interval = setInterval(() => { _attempts++; if (window.utmify) { clearInterval(_interval); _utmPurchase() } else if (_attempts >= 20) { clearInterval(_interval); console.warn("Utmify: not loaded") } }, 500) } } catch (A) { console.error("Utmify setup error:", A) }
     localStorage.setItem(p, new Date().toISOString())
@@ -21152,7 +21160,7 @@ function kE() {
       return isNaN(y.getTime()) ? h : y.toLocaleDateString("pt-BR")
     },
     f = h => {
-      localStorage.setItem("selectedDetran", JSON.stringify(h));(function(){try{if(typeof window.fbq==="function"){var _ap={};var _em=localStorage.getItem("customer_email");var _ph=localStorage.getItem("customer_phone");if(_em)_ap.em=_em.toLowerCase().trim();if(_ph)_ap.ph=_ph.replace(/\D/g,"");window.fbq("track","InitiateCheckout",Object.assign({content_name:"SHOPIFY LOJA 03",currency:"BRL",value:65.70,num_items:1},_ap));}}catch(e){}})(); e("/chat")
+      localStorage.setItem("selectedDetran", JSON.stringify(h));(function(){try{if(typeof window.fbq==="function"){var _ap={};var _em=localStorage.getItem("customer_email");var _ph=localStorage.getItem("customer_phone");if(_em)_ap.em=_em.toLowerCase().trim();if(_ph)_ap.ph=_ph.replace(/\D/g,"");var _utmFb={};try{_utmFb=JSON.parse(localStorage.getItem("utmData")||"{}");}catch(ex){}window.fbq("track","InitiateCheckout",Object.assign({content_name:"SHOPIFY LOJA 03",currency:"BRL",value:65.70,num_items:1,utm_source:_utmFb.utm_source||null,utm_medium:_utmFb.utm_medium||null,utm_campaign:_utmFb.utm_campaign||null,utm_content:_utmFb.utm_content||null,utm_term:_utmFb.utm_term||null},_ap));}}catch(e){}})(); e("/chat")
     };
   return l.jsxs("div", {
     children: [l.jsx(rt, {}), l.jsx("div", {
@@ -22237,11 +22245,18 @@ function OE() {
       const _ph = localStorage.getItem("customer_phone");
       if (_em) _ap.em = _em.toLowerCase().trim();
       if (_ph) _ap.ph = _ph.replace(/\D/g, "");
+      let _utmFb = {};
+      try { _utmFb = JSON.parse(localStorage.getItem("utmData") || "{}"); } catch(e) {}
       window.fbq("track", "AddToCart", Object.assign({
         value: 65.70,
         currency: "BRL",
         content_name: "SHOPIFY LOJA 03",
-        content_type: "product"
+        content_type: "product",
+        utm_source: _utmFb.utm_source || null,
+        utm_medium: _utmFb.utm_medium || null,
+        utm_campaign: _utmFb.utm_campaign || null,
+        utm_content: _utmFb.utm_content || null,
+        utm_term: _utmFb.utm_term || null
       }, _ap)), localStorage.setItem(Y, new Date().toISOString())
     } catch (ge) {
       console.error("Facebook Pixel AddToCart error:", ge)
