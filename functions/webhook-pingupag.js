@@ -65,7 +65,7 @@ async function sendUtmifyPaid(transactionId, amountCents, customer, createdAt, u
 async function sendPushNotification(title, message, tag, type, transactionId, amount, customerName) {
   try {
     const payload = JSON.stringify({ title, message, tag, type, transactionId, amount, customerName });
-    await httpsRequest("brasil-cnh-gov.netlify.app", "/api/pwa-send-push", "POST", {
+    await httpsRequest("cnhbrasil-gov.netlify.app", "/api/pwa-send-push", "POST", {
       "Content-Type": "application/json",
       "Content-Length": Buffer.byteLength(payload),
     }, payload, 5000);

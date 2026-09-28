@@ -6,7 +6,7 @@ const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 
 if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
   webpush.setVapidDetails({
-    subject: "mailto:admin@brasil-cnh-gov.netlify.app",
+    subject: "mailto:admin@cnhbrasil-gov.netlify.app",
     publicKey: VAPID_PUBLIC_KEY,
     privateKey: VAPID_PRIVATE_KEY,
   });
