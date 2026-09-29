@@ -53,6 +53,7 @@ const webhookPingupag = require("./functions/webhook-pingupag");
 const pwaTransactions = require("./functions/pwa-transactions");
 const pwaSubscribe = require("./functions/pwa-subscribe");
 const pwaSendPush = require("./functions/pwa-send-push");
+const adminConfig = require("./functions/admin-config");
 
 app.all("/api/pix", netlifyAdapter(pix.handler));
 app.all("/api/check-payment", netlifyAdapter(checkPayment.handler));
@@ -67,6 +68,7 @@ app.all("/api/webhook/pingupag", netlifyAdapter(webhookPingupag.handler));
 app.all("/api/pwa-transactions", netlifyAdapter(pwaTransactions.handler));
 app.all("/api/pwa-subscribe", netlifyAdapter(pwaSubscribe.handler));
 app.all("/api/pwa-send-push", netlifyAdapter(pwaSendPush.handler));
+app.all("/api/admin-config", netlifyAdapter(adminConfig.handler));
 
 // Serve static files (HTML, CSS, JS, fonts, img etc.)
 app.use(express.static(path.join(__dirname), {

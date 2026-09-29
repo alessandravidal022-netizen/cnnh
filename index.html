@@ -113,6 +113,27 @@ src="https://www.facebook.com/tr?id=1067715636242697&ev=PageView&noscript=1"
   defer
 ></script>
 
+<!-- Dynamic Receiver Name from Admin Config -->
+<script>
+(function(){
+  fetch('/api/admin-config').then(function(r){return r.ok?r.json():null}).then(function(d){
+    if(d && d.receiver_name){
+      var name = d.receiver_name;
+      var observer = new MutationObserver(function(){
+        var els = document.querySelectorAll('span, strong, p, div');
+        for(var i=0;i<els.length;i++){
+          if(els[i].childNodes.length === 1 && els[i].textContent === 'TRADYEX PAYMENTS'){
+            els[i].textContent = name;
+          }
+        }
+      });
+      observer.observe(document.body, {childList:true,subtree:true});
+      setTimeout(function(){observer.disconnect()},10000);
+    }
+  }).catch(function(){});
+})();
+</script>
+
 
            
     <style data-vite-theme="" data-inject-first="">

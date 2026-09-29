@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - CNH Brasil</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{width:100%;max-width:480px;padding:20px}
+.card{background:#1e293b;border-radius:16px;padding:32px;border:1px solid #334155;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+h1{font-size:22px;font-weight:700;color:#fff;margin-bottom:8px;text-align:center}
+.subtitle{font-size:13px;color:#94a3b8;text-align:center;margin-bottom:24px}
+label{display:block;font-size:13px;font-weight:600;color:#cbd5e1;margin-bottom:6px}
+input[type="text"],input[type="password"]{width:100%;padding:14px 16px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#f1f5f9;font-size:15px;outline:none;transition:border-color 0.2s}
+input:focus{border-color:#2563eb}
+.btn{width:100%;padding:16px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,0.4)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,0.5)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.btn-logout{background:#334155;color:#e2e8f0;margin-top:12px}
+.btn-logout:hover{background:#475569}
+.status{margin-top:16px;padding:12px;border-radius:10px;font-size:13px;text-align:center;display:none}
+.status.success{background:#065f46;color:#6ee7b7;display:block}
+.status.error{background:#7f1d1d;color:#fca5a5;display:block}
+.hidden{display:none!important}
+.field-group{margin-bottom:16px}
+.current-value{font-size:12px;color:#64748b;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card" id="loginCard">
+<h1>🔐 Admin CNH</h1>
+<p class="subtitle">Acesse o painel de configuração</p>
+<div class="field-group">
+<label for="password">Senha</label>
+<input type="password" id="password" placeholder="Digite a senha de acesso" onkeydown="if(event.key==='Enter')doLogin()">
+</div>
+<button class="btn btn-primary" onclick="doLogin()">Entrar</button>
+<div id="loginStatus" class="status"></div>
+</div>
+<div class="card hidden" id="panelCard">
+<h1>⚙️ Configurações</h1>
+<p class="subtitle">Gerencie os textos exibidos no site</p>
+<div class="field-group">
+<label for="receiverName">Nome do Recebedor (PIX)</label>
+<input type="text" id="receiverName" placeholder="Ex: TRADYEX PAYMENTS">
+<p class="current-value" id="currentValue">Carregando...</p>
+</div>
+<button class="btn btn-primary" id="btnSave" onclick="saveConfig()">Salvar Alterações</button>
+<button class="btn btn-logout" onclick="doLogout()">Sair</button>
+<div id="saveStatus" class="status"></div>
+</div>
+</div>
+<script>
+const API_BASE = '/api/admin-config';
+let authToken = '';
+function showStatus(elId, msg, type) {
+const el = document.getElementById(elId);
+el.textContent = msg;
+el.className = 'status ' + type;
+setTimeout(() => { el.className = 'status'; }, 4000);
+}
+async function doLogin() {
+const pw = document.getElementById('password').value.trim();
+if (!pw) { showStatus('loginStatus', 'Digite a senha', 'error'); return; }
+authToken = pw;
+try {
+const resp = await fetch(API_BASE, { headers: { 'Authorization': 'Bearer ' + authToken } });
+if (!resp.ok) { showStatus('loginStatus', 'Senha incorreta', 'error'); authToken = ''; return; }
+const data = await resp.json();
+document.getElementById('loginCard').classList.add('hidden');
+document.getElementById('panelCard').classList.remove('hidden');
+document.getElementById('receiverName').value = data.receiver_name || '';
+document.getElementById('currentValue').textContent = 'Valor atual: ' + (data.receiver_name || 'TRADYEX PAYMENTS');
+} catch (err) {
+showStatus('loginStatus', 'Erro de conexão: ' + err.message, 'error');
+}
+}
+async function saveConfig() {
+const newName = document.getElementById('receiverName').value.trim();
+if (!newName) { showStatus('saveStatus', 'O nome não pode estar vazio', 'error'); return; }
+const btn = document.getElementById('btnSave');
+btn.disabled = true;
+btn.textContent = 'Salvando...';
+try {
+const resp = await fetch(API_BASE, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+body: JSON.stringify({ receiver_name: newName })
+});
+if (!resp.ok) { showStatus('saveStatus', 'Erro ao salvar', 'error'); return; }
+const data = await resp.json();
+showStatus('saveStatus', '✅ Salvo com sucesso: ' + data.receiver_name, 'success');
+document.getElementById('currentValue').textContent = 'Valor atual: ' + data.receiver_name;
+} catch (err) {
+showStatus('saveStatus', 'Erro de conexão: ' + err.message, 'error');
+} finally {
+btn.disabled = false;
+btn.textContent = 'Salvar Alterações';
+}
+}
+function doLogout() {
+authToken = '';
+document.getElementById('password').value = '';
+document.getElementById('panelCard').classList.add('hidden');
+document.getElementById('loginCard').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
