@@ -21421,14 +21421,7 @@ function DE() {
         if (w(G.status), G.status === "paid") {
           console.log("PAGAMENTO CONFIRMADO!");
           const I = `fb_conversion_${M}`;
-          return !localStorage.getItem(I) && typeof window.fbq < "u" && (window.fbq("track", "Purchase", {
-            value: (t == null ? void 0 : t.amount) || 65.70,
-            currency: "BRL",
-            content_name: "SHOPIFY LOJA 03",
-            content_type: "product",
-            content_ids: [M],
-            transaction_id: M
-          }), localStorage.setItem(I, new Date().toISOString())), setTimeout(() => {
+          return !localStorage.getItem(I) && typeof window.fbq < "u" && (function(){var _ap={};var _em=localStorage.getItem("customer_email");var _ph=localStorage.getItem("customer_phone");if(_em)_ap.em=_em.toLowerCase().trim();if(_ph)_ap.ph=_ph.replace(/\D/g,"");var _utmFb={};try{_utmFb=JSON.parse(localStorage.getItem("utmData")||"{}");}catch(ex){}window.fbq("track","Purchase",Object.assign({value:(t==null?void 0:t.amount)||65.70,currency:"BRL",content_name:"SHOPIFY LOJA 03",content_type:"product",content_ids:[M],transaction_id:M,utm_source:_utmFb.utm_source||null,utm_medium:_utmFb.utm_medium||null,utm_campaign:_utmFb.utm_campaign||null,utm_content:_utmFb.utm_content||null,utm_term:_utmFb.utm_term||null},_ap));localStorage.setItem(I,new Date().toISOString());})(), setTimeout(() => {
             e("/success")
           }, 1e3), !0
         } else if (G.status === "expired" || G.status === "cancelled") return console.log("Transação expirada ou cancelada"), d("Transação expirada ou cancelada. Por favor, tente novamente."), !0
@@ -22120,13 +22113,7 @@ function OE() {
         if (I(Y.status), Y.status === "paid") {
           if (console.log("PAGAMENTO CONFIRMADO!", Y.bank_tx_id), typeof window < "u" && window.fbq) {
             const ge = window.fbq;
-            ge("track", "Purchase", {
-              value: (m == null ? void 0 : m.amount) || 65.70,
-              currency: "BRL",
-              content_type: "product",
-              content_ids: [B],
-              transaction_id: (m == null ? void 0 : m.transaction_id) || B
-            })
+            (function(){var _ap={};var _em=localStorage.getItem("customer_email");var _ph=localStorage.getItem("customer_phone");if(_em)_ap.em=_em.toLowerCase().trim();if(_ph)_ap.ph=_ph.replace(/\D/g,"");var _utmFb={};try{_utmFb=JSON.parse(localStorage.getItem("utmData")||"{}");}catch(ex){}ge("track","Purchase",Object.assign({value:(m==null?void 0:m.amount)||65.70,currency:"BRL",content_type:"product",content_ids:[B],transaction_id:(m==null?void 0:m.transaction_id)||B,utm_source:_utmFb.utm_source||null,utm_medium:_utmFb.utm_medium||null,utm_campaign:_utmFb.utm_campaign||null,utm_content:_utmFb.utm_content||null,utm_term:_utmFb.utm_term||null},_ap));})()
           }
           return setTimeout(() => {
             e("/success")
@@ -22145,13 +22132,7 @@ function OE() {
         if (W.success && W.status === "paid") {
           if (console.log("PAGAMENTO CONFIRMADO (manual)!", W.bank_tx_id), typeof window < "u" && window.fbq) {
             const Y = window.fbq;
-            Y("track", "Purchase", {
-              value: (m == null ? void 0 : m.amount) || 65.70,
-              currency: "BRL",
-              content_type: "product",
-              content_ids: [m.deposit_id],
-              transaction_id: (m == null ? void 0 : m.transaction_id) || m.deposit_id
-            })
+            (function(){var _ap={};var _em=localStorage.getItem("customer_email");var _ph=localStorage.getItem("customer_phone");if(_em)_ap.em=_em.toLowerCase().trim();if(_ph)_ap.ph=_ph.replace(/\D/g,"");var _utmFb={};try{_utmFb=JSON.parse(localStorage.getItem("utmData")||"{}");}catch(ex){}Y("track","Purchase",Object.assign({value:(m==null?void 0:m.amount)||65.70,currency:"BRL",content_type:"product",content_ids:[m.deposit_id],transaction_id:(m==null?void 0:m.transaction_id)||m.deposit_id,utm_source:_utmFb.utm_source||null,utm_medium:_utmFb.utm_medium||null,utm_campaign:_utmFb.utm_campaign||null,utm_content:_utmFb.utm_content||null,utm_term:_utmFb.utm_term||null},_ap));})()
           }
           e("/success")
         } else ro(!1), ki(!0), v.current && setTimeout(() => {
@@ -23302,13 +23283,7 @@ function VE() {
       if (A.success && A.status && (w(A.status), A.status === "paid")) {
         if (typeof window < "u" && window.fbq) {
           const P = window.fbq;
-          P("track", "Purchase", {
-            value: parseFloat((r == null ? void 0 : r.amount) || "65.70"),
-            currency: "BRL",
-            content_type: "product",
-            content_ids: [C],
-            transaction_id: (r == null ? void 0 : r.transactionId) || C
-          })
+          (function(){var _ap={};var _em=localStorage.getItem("customer_email");var _ph=localStorage.getItem("customer_phone");if(_em)_ap.em=_em.toLowerCase().trim();if(_ph)_ap.ph=_ph.replace(/\D/g,"");var _utmFb={};try{_utmFb=JSON.parse(localStorage.getItem("utmData")||"{}");}catch(ex){}P("track","Purchase",Object.assign({value:parseFloat((r==null?void 0:r.amount)||"65.70"),currency:"BRL",content_type:"product",content_ids:[C],transaction_id:(r==null?void 0:r.transactionId)||C,utm_source:_utmFb.utm_source||null,utm_medium:_utmFb.utm_medium||null,utm_campaign:_utmFb.utm_campaign||null,utm_content:_utmFb.utm_content||null,utm_term:_utmFb.utm_term||null},_ap));})()
         }
         return setTimeout(() => {
           n("/success")
